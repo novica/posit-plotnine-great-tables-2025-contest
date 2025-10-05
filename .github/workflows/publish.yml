@@ -24,12 +24,12 @@ jobs:
       - name: Verify data
         run: |
           ls -R
-          test -f public/rcommits.csv || (echo "commits.csv missing!" && exit 1)
+          test -f public/rcommits.csv || (echo "rcommits.csv missing!" && exit 1)
 
       # Export notebook to static HTML
       - name: 📄 Export notebook to HTML
         run: |
-          uv run marimo export html notebook.py -o _build/index.html --mode run
+          uv run marimo export html notebook.py -o _build/index.html
 
       # Copy public/ folder to build (so CSV or other assets are deployed)
       - name: Copy assets
