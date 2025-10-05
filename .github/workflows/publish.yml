@@ -1,0 +1,61 @@
+name: Publish to GitHub Pages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v4
+
+      # Setup UV environment
+      - uses: astral-sh/setup-uv@v6
+
+      # Install project dependencies
+      - name: Install the project
+        run: uv sync --no-dev --locked
+
+      # Verify CSV exists
+      - name: Verify data
+        run: |
+          ls -R
+          test -f public/rcommits.csv || (echo "commits.csv missing!" && exit 1)
+
+      # Export notebook to static HTML
+      - name: 📄 Export notebook to HTML
+        run: |
+          uv run marimo export html notebook.py -o _build/index.html --mode run
+
+      # Copy public/ folder to build (so CSV or other assets are deployed)
+      - name: Copy assets
+        run: cp -r public _build/
+
+      # Upload build artifact for Pages deployment
+      - name: 📦 Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      # Deploy to GitHub Pages
+      - name: 🌐 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages

@@ -1,0 +1,23 @@
+[project]
+name = "posit-plotnine-great-tables"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+license-files = ["LICENSE"]
+classifiers = ["Private :: Do Not Upload"]
+authors = [{ name = "Novica Nakov", email = "nnovica@gmail.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "great-tables>=0.18.0",
+    "marimo>=0.14.16",
+    "plotnine>=0.15.0",
+    "polars>=1.34.0",
+    "pyarrow>=21.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.403",
+    "pytest>=8.4.1",
+    "ruff>=0.12.7",
+]
