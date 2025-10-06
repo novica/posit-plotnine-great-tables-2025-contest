@@ -100,7 +100,9 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Upon closer inspection, it seems that there are several contributors that are not persons. I am thinking maybe `apache` is for Apache Software Foundation, `(no author)` is well - when the author is not known(?), `root` and `r` may be system users or something used in automation.""")
+    mo.md(
+        r"""Upon closer inspection, it seems that there are several contributors that are not persons. I am thinking maybe `apache` is for Apache Software Foundation, `(no author)` is well - when the author is not known(?), `root` and `r` may be system users or something used in automation."""
+    )
     return
 
 
@@ -114,7 +116,9 @@ def _(df, pl):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""Next, I will exclude these four contributors and create a summary table that groups commit per year and contributor. And then make the data to a wide format in order to have the years as columns.""")
+    mo.md(
+        r"""Next, I will exclude these four contributors and create a summary table that groups commit per year and contributor. And then make the data to a wide format in order to have the years as columns."""
+    )
     return
 
 
