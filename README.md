@@ -13,7 +13,7 @@ Should run the notebook in the browser.
 
 ## Links to the contest submissions
 - [Great Tables](https://github.com/rich-iannone/table-contest/discussions/22)
-- [plotnine](https://github.com/has2k1/plotnine/discussions/972)
+- [plotnine](https://github.com/has2k1/plotnine/discussions/996)
 
 
 ## Credits
