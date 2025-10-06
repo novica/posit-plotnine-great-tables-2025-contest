@@ -19,7 +19,7 @@ def _(mo):
         r"""
     # What is this notebook about
 
-    I decided to give a shot at [Posit's 2025 Table and Plotnine Contests](https://posit.co/blog/announcing-the-2025-table-and-plotnine-contests/). I also wanted to try `marimo` and `polars` in the process.
+    I decided to give a shot at [Posit's 2025 Table and Plotnine Contests](https://posit.co/blog/announcing-the-2025-table-and-plotnine-contests/). I also wanted to try `marimo` and `polars` in the process. Initially I wanted this to be a `html-wasm` notebook, but it turned out there are some complications with using `pyarro` in `wasm` that I could not figure out how to resolve, so instead this is a static notebook.
 
     I was thinking about what data to visualize, and from partly participating in [C Study Group for R Contributors 2025](the https://contributor.r-project.org/events/c-study-group-2025/) I had the R source code on my computer, so it seemed like a good idea to play with the `commits` data.
     """
@@ -100,9 +100,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""Upon closer inspection, it seems that there are several contributors that are not persons. I am thinking maybe `apache` is for Apache Software Foundation, `(no author)` is well - when the author is not known(?), `root` and `r` may be system users or something used in automation."""
-    )
+    mo.md(r"""Upon closer inspection, it seems that there are several contributors that are not persons. I am thinking maybe `apache` is for Apache Software Foundation, `(no author)` is well - when the author is not known(?), `root` and `r` may be system users or something used in automation.""")
     return
 
 
@@ -116,9 +114,7 @@ def _(df, pl):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""Next, I will exclude these four contributors and create a summary table that groups commit per year and contributor. And then make the data to a wide format in order to have the years as columns."""
-    )
+    mo.md(r"""Next, I will exclude these four contributors and create a summary table that groups commit per year and contributor. And then make the data to a wide format in order to have the years as columns.""")
     return
 
 
@@ -203,6 +199,7 @@ def _(df_wide, pl, year_cols):
     df_heatmap = df_wide.to_pandas()
     df_heatmap["heatmap"] = df_heatmap.apply(make_heatmap, axis=1)
 
+    # Create the row with years
     labels = []
     for i, y in enumerate(year_cols):
         if i == 0 or (i % 4 == 0) or i == len(year_cols):
@@ -258,7 +255,7 @@ def _(df_heatmap, matplotlib, mcolors):
         )
         .tab_options(column_labels_hidden=True)
         .tab_source_note(make_source_and_legend(matplotlib.colormaps["Greens"]))
-        .tab_options(table_background_color="#D3D3D3")
+        .tab_options(table_background_color="#F5F5F5")
         .opt_vertical_padding(scale=0.3)
     )
 
@@ -267,15 +264,29 @@ def _(df_heatmap, matplotlib, mcolors):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
     mo.md(
         r"""
-    ## Ploting with plotnine
+    ## Plotting with plotnine
 
-    The plot shows number of commits for the whole repository over the period that the data is avaiale for (1997-2025) with the size of the bubbles equaling the average word count for the commit messages in a given year. 
+    I found plotting with `plotnine` to be more or less the same as plotting with `ggplot2` which is kind of nice on its own. However, when I wanted to make the plot a somewhat interactive, I could not figure a way to do it (I was looking to add a filter per contributor and have the plot change by selecting different names.)
 
-    What can this plot tell us? Could be that number of commits gets lower as project matures, but commits require longer explanations
+    It seems that that type of thing is possible to do in `marimo` with the python library [`altair`](https://altair-viz.github.io/), which as far as I understood is based on a grammar for graphics implementation just like `plotnine` and `ggplot2`. So that it something to maybe test in the future.
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## The plotnine plot
+
+    The plot shows the number of commits for the whole repository over the period that the data is available for (1997-2025) with the size of the bubbles equaling the average word count for the commit messages in a given year. 
+
+    What can this plot tell us? Could be that number of commits gets lower as the project matures, but commits require longer explanations. This could be a hypothesis to test. 
     """
     )
     return
@@ -318,7 +329,7 @@ def _(cmap, df, matplotlib, np, pl):
             pdf, p9.aes(x="year", y="n_commits", size="avg_words", fill="avg_words")
         )
         + p9.geom_point(
-            shape="o", alpha=0.8, color="white"
+            shape="o", alpha=0.8, color="black"
         )  # shape="o" uses fill + border
         + p9.geom_vline(xintercept=vlines, linetype="dashed", color="gray")
         + p9.annotate(
@@ -345,8 +356,8 @@ def _(cmap, df, matplotlib, np, pl):
         )
         + p9.theme_minimal(base_size=14)
         + p9.theme(
-            plot_background=p9.element_rect(fill="#D3D3D3", color="#D3D3D3"),
-            panel_background=p9.element_rect(fill="#D3D3D3", color="#D3D3D3"),
+            plot_background=p9.element_rect(fill="#F5F5F5", color="#F5F5F5"),
+            panel_background=p9.element_rect(fill="#F5F5F5", color="#F5F5F5"),
             plot_title=p9.element_text(
                 weight="bold", size=18, margin={"b": 15, "t": 15}
             ),
@@ -356,6 +367,20 @@ def _(cmap, df, matplotlib, np, pl):
     )
 
     p.draw()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## Maybe next steps
+
+    I can imagine this whole notebook to be automated using `GitHub actions` in order to track commits over time. 
+
+    Maybe a nice idea would be to have a word cloud of the commit messages.
+    """
+    )
     return
 
 
